@@ -1,0 +1,12 @@
+{% extends "blog/base.html" %}
+{% load l10n tz %}
+
+{% block main %}
+        <h1>{{ object.title }}</h1>
+        <p>投稿日: <time datetime="{{ object.created }}">{{ object.created|localtime|localize }}</time></p>
+        <a href="{% url 'update' object.id %}">編集</a>
+        <a href="{% url 'delete' object.id %}">削除</a>
+        <div>
+            {{ object.body|safe }}
+        </div>
+{% endblock %}
