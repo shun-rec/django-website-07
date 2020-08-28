@@ -105,6 +105,8 @@ class Create(CreateView):
     fields = ["title", "body"]
 ```
 
+### モデルの個別ページのURL設定
+
 ```py
 from django.urls import reverse_lazy
 
@@ -118,7 +120,7 @@ class Post(models.Model):
 ## 5-4 UpdateViewとDeleteViewで編集・削除画面を作ろう
 
 
-UpdateViewのひな形
+### UpdateViewのひな形
 
 ```py
 from django.views.generic.edit import UpdateView
@@ -128,10 +130,10 @@ class Update(UpdateView):
     fields = ["title", "body"]
 ```
 
-DeleteViewのひな形
+### DeleteViewのひな形
 
 ```py
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
 
 class Delete(DeleteView):
     model = Post
