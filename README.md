@@ -6,6 +6,18 @@ https://github.com/shun-rec/django-website-05
 
 ## 5-1 モデルを作成してシェルから使ってみよう
 
+### モデルの作成ひな形
+
+```py
+from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=255, null=False, blank=False)
+    body = models.TextField(null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
+```
+
 ### shellの起動と停止
 
 起動
