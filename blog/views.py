@@ -4,6 +4,17 @@ from django.urls import reverse_lazy
 
 from .models import Post
 
+from django import forms
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "body"]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': "form-control" }),
+            'body': forms.Textarea(attrs={'class': "form-control" }),
+        }
+
 class Index(ListView):
     model = Post
     
@@ -14,7 +25,7 @@ class Detail(DetailView):
 
 class Create(CreateView):
     model = Post
-    fields = ['title', 'body']
+    form_class = PostForm
     
     def get_context_data(self):
         ctxt = super().get_context_data()
@@ -24,7 +35,7 @@ class Create(CreateView):
 
 class Update(UpdateView):
     model = Post
-    fields = ["title", "body"]
+    form_class = PostForm
     
     def get_context_data(self):
         ctxt = super().get_context_data()
