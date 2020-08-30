@@ -2,7 +2,7 @@
 
 ## 完成版プロジェクトURL
 
-https://github.com/shun-rec/django-website-05
+https://github.com/shun-rec/django-website-06
 
 ## 5-1 モデルを作成してシェルから使ってみよう
 
