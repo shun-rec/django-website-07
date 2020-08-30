@@ -1,10 +1,10 @@
-# djangoチュートリアル #5 データの取得・作成・編集・削除
+# djangoチュートリアル #6 データの取得・作成・編集・削除
 
 ## 完成版プロジェクトURL
 
 https://github.com/shun-rec/django-website-06
 
-## 5-1 モデルを作成してシェルから使ってみよう
+## 6-1 モデルを作成してシェルから使ってみよう
 
 ### モデルの作成ひな形
 
@@ -65,7 +65,7 @@ post.title = "タイトル"
 post.save()
 ```
 
-## 5-2 DetailViewとListViewで一覧と詳細画面を作ろう
+## 6-2 DetailViewとListViewで一覧と詳細画面を作ろう
 
 ### ListViewとDetailViewのひな形
 
@@ -105,7 +105,7 @@ blog/templates/blog/base.html
 </html>
 ```
 
-## 5-3 CreateViewで新規作成画面を作ろう
+## 6-3 CreateViewで新規作成画面を作ろう
 
 ### CreateViewのひな形
 
@@ -129,7 +129,7 @@ class Post(models.Model):
 ```
 
 
-## 5-4 UpdateViewとDeleteViewで編集・削除画面を作ろう
+## 6-4 UpdateViewとDeleteViewで編集・削除画面を作ろう
 
 
 ### UpdateViewのひな形
@@ -152,7 +152,7 @@ class Delete(DeleteView):
     success_url = "/"
 ```
 
-## 5-5 CreateViewのフォームをカスタマイズしよう
+## 6-5 CreateViewのフォームをカスタマイズしよう
 
 ```py
 from django import forms
