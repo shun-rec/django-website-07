@@ -4,7 +4,7 @@
 
 https://github.com/shun-rec/django-website-06
 
-## 6-1 モデルを作成してシェルから使ってみよう
+## ブログのモデルを作成しよう！
 
 ### モデルの作成ひな形
 
@@ -65,19 +65,6 @@ post.title = "タイトル"
 post.save()
 ```
 
-## 6-2 DetailViewとListViewで一覧と詳細画面を作ろう
-
-### ListViewとDetailViewのひな形
-
-```py
-from django.views.generic import ListView, DetailView
-
-class Index(ListView):
-    model = Post
-
-class Detail(DetailView):
-    model = Post
-```
 
 ### Bootstrapを取り込んだベースHTML
 
@@ -94,7 +81,7 @@ blog/templates/blog/base.html
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">匿名ブログ</a>
+            <a class="navbar-brand" href="/">匿名ブログ</a>
         </nav>
         <div class="container mt-4">
         {% block main %}
@@ -105,64 +92,3 @@ blog/templates/blog/base.html
 </html>
 ```
 
-## 6-3 CreateViewで新規作成画面を作ろう
-
-### CreateViewのひな形
-
-```py
-from django.views.generic.edit import CreateView
-
-class Create(CreateView):
-    model = Post
-    fields = ["title", "body"]
-```
-
-### モデルの個別ページのURL設定
-
-```py
-from django.urls import reverse_lazy
-
-class Post(models.Model):
-    # 略
-    def get_absolute_url(self):
-        return reverse_lazy("detail", args=[self.id])
-```
-
-
-## 6-4 UpdateViewとDeleteViewで編集・削除画面を作ろう
-
-
-### UpdateViewのひな形
-
-```py
-from django.views.generic.edit import UpdateView
-
-class Update(UpdateView):
-    model = Post
-    fields = ["title", "body"]
-```
-
-### DeleteViewのひな形
-
-```py
-from django.views.generic.edit import DeleteView
-
-class Delete(DeleteView):
-    model = Post
-    success_url = "/"
-```
-
-## 6-5 CreateViewのフォームをカスタマイズしよう
-
-```py
-from django import forms
-
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ["title", "body"]
-        widgets = {
-            'title': forms.TextInput(attrs={'class': "form-control" }),
-            'body': forms.Textarea(attrs={'class': "form-control" }),
-        }
-```
