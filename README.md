@@ -1,100 +1,101 @@
-# djangoチュートリアル #6 データの取得・作成・編集・削除
+# django Tutorial #6
 
-## 完成版プロジェクトURL
+## Project URL
 
 https://github.com/shun-rec/django-website-06
 
-## ブログのモデルを作成しよう！
+## Create models
+
+* Post
+* Tag
+* Category
 
 ![](models.png)
 
+### ForeignKey (1 : M)
+
 ![](foreignkey.png)
+
+### ManyToMany (M : M)
 
 ![](manytomany.png)
 
-### モデルの作成ひな形
+### `blog/models.py`
 
 ```py
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=255, blank=False, null=False, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255, blank=False, null=False, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
-    title = models.CharField(max_length=255, null=False, blank=False)
-    body = models.TextField(null=False, blank=False)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
+    created = models.DateTimeField(auto_now_add=True, editable=False, blank=False, null=False)
+    updated = models.DateTimeField(auto_now=True, editable=False, blank=False, null=False)
+    title = models.CharField(max_length=255, blank=False, null=False)
+    body = models.TextField(blank=True, null=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    def get_absolute_url(self):
+        return reverse_lazy("detail", args=[self.id])
 ```
 
-### shellの起動と停止
+## Use models
 
-起動
+### django shell
+
+#### Start
 
 ```sh
 python manage.py shell
 ```
 
-停止
+#### Stop
 
 ```sh
 exit
 ```
 
-### モデルに対する基本的な操作
+### Operations
 
-すべて取得
+#### Get all
 
 ```py
 Post.objects.all()
 ```
 
-最新/最初の１つ取得
+#### Get one or nothing
 
 ```py
-Post.objects.last()
 Post.objects.first()
 ```
 
-新規作成
+#### Create new
 
 ```py
 post = Post()
 ```
 
-フィールドの設定
+#### Set field
 
 ```py
-post.title = "タイトル"
+post.title = "post 1"
 ```
 
-データベースに保存
+#### Save it to DB
 
 ```py
 post.save()
-```
-
-
-### Bootstrapを取り込んだベースHTML
-
-blog/templates/blog/base.html
-
-```html
-<!doctype HTML>
-<html>
-    <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">匿名ブログ</a>
-        </nav>
-        <div class="container mt-4">
-        {% block main %}
-        <p>※コンテンツがありません。</p>
-        {% endblock %}
-        </div>
-    </body>
-</html>
 ```
 
