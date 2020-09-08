@@ -51,6 +51,20 @@ class Post(models.Model):
         return reverse_lazy("detail", args=[self.id])
 ```
 
+## Update DB
+
+### Create migration file
+
+```sh
+python manage.py makemigrations
+```
+
+### Migrate DB
+
+```sh
+python manage.py migrate
+```
+
 ## Use models
 
 ### django shell
@@ -98,4 +112,6 @@ post.title = "post 1"
 ```py
 post.save()
 ```
+
+## Use models from Admin page
 
