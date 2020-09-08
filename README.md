@@ -6,6 +6,12 @@ https://github.com/shun-rec/django-website-06
 
 ## ブログのモデルを作成しよう！
 
+![](models.png)
+
+![](foreignkey.png)
+
+![](manytomany.png)
+
 ### モデルの作成ひな形
 
 ```py
