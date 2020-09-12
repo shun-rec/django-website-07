@@ -16,6 +16,12 @@
 git clone https://github.com/shun-rec/django-website-06
 ```
 
+フォルダを移動
+
+```sh
+cd django-website-06
+```
+
 ### マイグレートしてDBを作成
 
 ```sh
