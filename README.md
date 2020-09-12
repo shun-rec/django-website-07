@@ -1,4 +1,4 @@
-# django-website-07
+# djangoチュートリアル #7
 
 ## 完成版プロジェクト
 
