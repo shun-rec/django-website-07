@@ -8,12 +8,12 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url 'index' %}">匿名ブログサービス</a>
+            <a class="navbar-brand" href="/">匿名ブログ</a>
         </nav>
-        <div class="container mt-5">
+        <div class="container mt-4">
         {% block main %}
-        {% endblock %}            
+        <p>※コンテンツがありません。</p>
+        {% endblock %}
         </div>
-
     </body>
 </html>

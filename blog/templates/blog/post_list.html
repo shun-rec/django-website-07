@@ -1,17 +1,9 @@
 {% extends "blog/base.html" %}
-
 {% block main %}
-        <h1>匿名ブログ</h1>
-        <p>誰でも登録無しで投稿できるよ！</p>
-        
-        <a href="{% url 'create' %}">投稿する</a>
-        
-        <h2>最新の投稿一覧</h2>
-        <ol>
-            {% for post in object_list %}
-            <li><a href="{% url 'detail' post.id %}">{{ post.title }}</a></li>
-            {% empty %}
-            <li>投稿はまだありません。</li>
-            {% endfor %}            
-        </ol>
+<h2>記事一覧</h2>
+<ol>
+    {% for post in object_list %}
+    <li><a href="{% url 'detail' post.id %}">{{ post.title }}</a></li>
+    {% endfor %}
+</ol>
 {% endblock %}
