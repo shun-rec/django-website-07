@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %}
+
+{% block main %}
+<h2>新規投稿</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="投稿" class="btn btn-primary" />
+</form>
+{% endblock %}

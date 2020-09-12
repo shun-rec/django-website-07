@@ -70,12 +70,12 @@ exit
 # ListViewとDetailViewを取り込み
 from django.views.generic import ListView, DetailView
 
-# 一覧
+# ListViewは一覧を簡単に作るためのView
 class Index(ListView):
     # 一覧するモデルを指定 -> `object_list`で取得可能
     model = Post
 
-# 個別
+# DetailViewは詳細を簡単に作るためのView
 class Detail(DetailView):
     # 詳細表示するモデルを指定 -> `object`で取得可能
     model = Post
@@ -150,9 +150,9 @@ CSSを自分で書かなくても簡単に見た目を整えられる「CSSフ�
 {% endblock %}
 ```
 
-#### URLを設定
+### URLを設定
 
-##### BlogアプリのURL設定
+#### BlogアプリのURL設定
 
 `blog/urls.py`
 
@@ -163,11 +163,13 @@ from . import views
 
 urlpatterns = [
     path('', views.Index.as_view(), name="index"),
+    
+    # <pk>にPostのIDを渡すと表示される。
     path('detail/<pk>/', views.Detail.as_view(), name="detail"),
 ]
 ```
 
-##### 全体設定のURL設定
+#### 全体設定のURL設定
 
 `pj_blog/urls.py`
 
@@ -181,7 +183,7 @@ urlpatterns = [
 ]
 ```
 
-#### 一覧記事に記事へのリンクを設定
+### 一覧記事に記事へのリンクを設定
 
 `blog/templates/blog/post_list.html`の6行目を以下に変更
 
@@ -189,19 +191,74 @@ urlpatterns = [
 <li><a href="{% url 'detail' post.id %}">{{ post.title }}</a></li>
 ```
 
-## 6-3 CreateViewで新規作成画面を作ろう
+### 動かしてみよう
 
-### CreateViewのひな形
+最初に作ったサンプル投稿が一覧に表示されているはずです。  
+一覧をクリックすると個別ページに移動します。
+
+## ブログの新規投稿画面を作ろう
+
+### Viewの作成
+
+`blog/views.py`に以下を追記
 
 ```py
 from django.views.generic.edit import CreateView
 
+# CreateViewは新規作成画面を簡単に作るためのView
 class Create(CreateView):
     model = Post
-    fields = ["title", "body"]
+    
+    # 編集対象にするフィールド
+    fields = ["title", "body", "category", "tags"]
+```
+
+### Templateの作成
+
+* `Post`用の投稿フォームが`{{ form.as_p }}`で自動的に生成されます。
+* `{% csrf_token %}`はセキュリティ上form内に必ず必要な決り文句。
+
+※CreateViewはこの名前でテンプレートを探すのでこの名前でないとダメ
+
+`blog/templates/blog/post_form.html`
+
+```html
+{% extends "blog/base.html" %}
+
+{% block main %}
+<h2>新規投稿</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="投稿" class="btn btn-primary" />
+</form>
+{% endblock %}
+```
+
+### URLの設定
+
+`blog/urls.py`のdetailのURL設定の下に以下を追加。
+
+```py
+path('create/', views.Create.as_view(), name="create"),
+```
+
+### トップページからリンクを貼る
+
+`blog/templates/blog/post_list.html`
+
+`</ol>`の次の行に以下を追記。
+
+```html
+<p><a href="{% url 'create' %}">新規投稿</a></p>
 ```
 
 ### モデルの個別ページのURL設定
+
+デフォルトでは新規投稿したあとに、自動で投稿したばかりのページに移動します。  
+なので、各投稿のURLを知らせる必要があります。
+
+`blog/models.py`の`Post`モデルに、`import`と`get_absolute_url`メソッドを追記。
 
 ```py
 from django.urls import reverse_lazy
@@ -212,41 +269,97 @@ class Post(models.Model):
         return reverse_lazy("detail", args=[self.id])
 ```
 
+### 動ごかしてみよう
 
-## 6-4 UpdateViewとDeleteViewで編集・削除画面を作ろう
+トップページから新規投稿ページを開いて、投稿を追加できればOKです。
 
+## 投稿編集画面を作ろう
 
-### UpdateViewのひな形
+### Viewの作成
 
 ```py
 from django.views.generic.edit import UpdateView
 
 class Update(UpdateView):
     model = Post
-    fields = ["title", "body"]
+    fields = ["title", "body", "category", "tags"]
 ```
 
-### DeleteViewのひな形
+### Templateの作成
+
+※UpdateViewはデフォルトでCreateViewと同じTemplateを使うので必要なし！
+
+### URLの設定
+
+`blog/urls.py`
+
+`create`の次に以下を追記。
+
+```py
+    path('update/<pk>', views.Update.as_view(), name="update"),
+```
+
+### 個別ページからリンクを貼る
+
+`blog/templates/blog/post_detail.html`
+
+`{% endblock %}`の上に以下を追記。
+
+```html
+<p><a href="{% url 'update' object.pk %}">編集</a></p>
+```
+
+### 動かしてみよう
+
+個別ページから編集ボタンを押して、その投稿を編集出来ればOKです。
+
+## 投稿削除画面を作ろう
+
+### Viewの作成
 
 ```py
 from django.views.generic.edit import DeleteView
 
 class Delete(DeleteView):
     model = Post
+    
+    # 削除したあとに移動する先（トップページ）
     success_url = "/"
 ```
 
-## 6-5 CreateViewのフォームをカスタマイズしよう
+### Templateの作成
+
+※DetailViewはこの名前でテンプレートを探すのでこの名前でないとダメ
+
+`blog/templates/blog/post_confirm_delete.html`
+
+```html
+{% extends "blog/base.html" %}
+
+{% block main %}
+<h2>削除確認</h2>
+<p>{{ object.title }}を本当に削除してもよろしいですか？</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="削除" class="btn btn-danger" />
+</form>
+{% endblock %}
+```
+
+### URLの設定
+
+`update`のURL設定の下に以下を追記。
+
+`blog/urls.py`
 
 ```py
-from django import forms
-
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ["title", "body"]
-        widgets = {
-            'title': forms.TextInput(attrs={'class': "form-control" }),
-            'body': forms.Textarea(attrs={'class': "form-control" }),
-        }
+    path('delete/<pk>', views.Delete.as_view(), name="delete"),
 ```
+
+### 動かしてみよう
+
+個別ページから削除ページに移動できて、投稿が削除出来ればOKです。
+
+## おわりに
+
+今回作成した一覧・個別・作成・編集・削除はあらゆるものがカスタマイズ可能です。  

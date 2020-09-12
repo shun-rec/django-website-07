@@ -6,4 +6,6 @@
 <div>
     {{ object.body }}
 </div>
+<p><a href="{% url 'update' object.pk %}">編集</a></p>
+<p><a href="{% url 'delete' object.pk %}">削除</a></p>
 {% endblock %}
